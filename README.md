@@ -270,16 +270,16 @@ Set these in your Cloud Run service:
 The following features are planned for future releases but are currently out of scope:
 
 ### Security & Authentication
-- ❌ **Authentication System** - All endpoints are currently public
-- ❌ **File Access Control** - Files are made public immediately (security risk)
-- ❌ **Rate Limiting** - No protection against abuse/DoS attacks
-- ❌ **Enhanced File Validation** - Limited file type validation (potential security risk)
+- **Authentication System** - All endpoints are currently public
+- **File Access Control** - Files are made public immediately (security risk)
+- **Rate Limiting** - No protection against abuse/DoS attacks
+- **Enhanced File Validation** - Limited file type validation (potential security risk)
 
 ### Additional Features
-- ❌ **User Management** - User registration, login, profiles
-- ❌ **File Permissions** - Private files, sharing controls
-- ❌ **Advanced Security** - CSRF protection, input sanitization
-- ❌ **Monitoring & Alerts** - Error tracking, performance monitoring
+- **User Management** - User registration, login, profiles
+- **File Permissions** - Private files, sharing controls
+- **Advanced Security** - CSRF protection, input sanitization
+- **Monitoring & Alerts** - Error tracking, performance monitoring
 
 *These items are documented for future development and do not affect current functionality.*
 
