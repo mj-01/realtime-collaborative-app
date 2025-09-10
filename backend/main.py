@@ -15,15 +15,20 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Environment configuration
+HOST = os.getenv('HOST', '0.0.0.0')
+PORT = int(os.getenv('PORT', 8080))
+DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
+
+# CORS configuration
+CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:3000,https://frontend-987275518911.us-central1.run.app').split(',')
+
 app = FastAPI(title="Backend API", version="1.0.0")
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # Local development
-        "https://frontend-987275518911.us-central1.run.app",  # Frontend Cloud Run URL
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,10 +36,7 @@ app.add_middleware(
 
 # Initialize Socket.IO
 sio = socketio.AsyncServer(
-    cors_allowed_origins=[
-        "http://localhost:3000",  # Local development
-        "https://frontend-987275518911.us-central1.run.app",  # Frontend Cloud Run URL
-    ],
+    cors_allowed_origins=CORS_ORIGINS,
     async_mode='asgi'
 )
 socket_manager = SocketManager(app=app, socketio_server=sio)
@@ -65,6 +67,17 @@ else:
 # Cloud Storage configuration
 BUCKET_NAME = os.getenv('GCS_BUCKET_NAME', 'labs-realtime-app-files')
 bucket = storage_client.bucket(BUCKET_NAME)
+
+# File upload configuration
+MAX_FILE_SIZE_MB = int(os.getenv('MAX_FILE_SIZE_MB', 10))
+MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024  # Convert to bytes
+ALLOWED_FILE_TYPES = os.getenv('ALLOWED_FILE_TYPES', 'image/*,application/pdf,text/*,application/json').split(',')
+
+# Feature flags
+ENABLE_FILE_UPLOAD = os.getenv('ENABLE_FILE_UPLOAD', 'true').lower() == 'true'
+ENABLE_REAL_TIME_CHAT = os.getenv('ENABLE_REAL_TIME_CHAT', 'true').lower() == 'true'
+ENABLE_WHITEBOARD = os.getenv('ENABLE_WHITEBOARD', 'true').lower() == 'true'
+ENABLE_FILE_CLEANUP = os.getenv('ENABLE_FILE_CLEANUP', 'true').lower() == 'true'
 
 # Pydantic models
 class Item(BaseModel):
@@ -125,15 +138,18 @@ async def delete_item(item_id: int):
 async def upload_file(file: UploadFile = File(...)):
     """Upload a file to Google Cloud Storage and return a signed download URL"""
     
+    # Check if file upload is enabled
+    if not ENABLE_FILE_UPLOAD:
+        raise HTTPException(status_code=403, detail="File upload is disabled")
+    
     # Validate file
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
     
-    # Check file size (max 10MB)
-    max_size = 10 * 1024 * 1024  # 10MB
+    # Check file size
     file_content = await file.read()
-    if len(file_content) > max_size:
-        raise HTTPException(status_code=400, detail="File size exceeds 10MB limit")
+    if len(file_content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail=f"File size exceeds {MAX_FILE_SIZE_MB}MB limit")
     
     try:
         # Generate unique filename
@@ -607,5 +623,4 @@ socket_app = socketio.ASGIApp(sio, app)
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(socket_app, host="0.0.0.0", port=port)
+    uvicorn.run(socket_app, host=HOST, port=PORT)
