@@ -3,6 +3,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react';
+import { Socket } from 'socket.io-client';
 import { socketService } from '../services/socket';
 import { Message, User } from '../types';
 
