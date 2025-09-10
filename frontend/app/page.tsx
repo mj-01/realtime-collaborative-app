@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Whiteboard from '../src/components/Whiteboard';
-import Chat from '../src/components/Chat';
+import { Chat } from '../src/components/chat/Chat';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'whiteboard' | 'chat'>('whiteboard');

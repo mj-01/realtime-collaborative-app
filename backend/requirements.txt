@@ -25,6 +25,7 @@ protobuf==6.32.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pydantic==2.11.7
+pydantic-settings==2.0.3
 pydantic_core==2.33.2
 python-dotenv==1.1.1
 python-engineio==4.12.2
@@ -44,3 +45,7 @@ uvloop==0.21.0
 watchfiles==1.1.0
 websockets==15.0.1
 wsproto==1.2.0
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.2
+psutil==5.9.6
