@@ -23,7 +23,7 @@ A comprehensive benchmarking suite for evaluating AI models and agents across di
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd monorepo/benchmarks
+cd realtime-collaborative-app/benchmarks
 
 # Install dependencies
 pip install -r requirements.txt

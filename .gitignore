@@ -56,3 +56,6 @@ ENV/
 key.json
 service-account-key.json
 credentials.json
+
+.env_backend_deployment.yaml
+.env_frontend_deployment.yaml

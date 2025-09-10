@@ -1,7 +1,7 @@
 {
-  "name": "monorepo",
+  "name": "realtime-collaborative-app",
   "version": "1.0.0",
-  "description": "Monorepo with Next.js frontend and FastAPI backend",
+  "description": "Real-time collaborative application with Next.js frontend and FastAPI backend",
   "private": true,
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",

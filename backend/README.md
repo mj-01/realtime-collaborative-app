@@ -1,6 +1,6 @@
 # Backend API
 
-FastAPI backend application for the monorepo.
+FastAPI backend application for the realtime-collaborative-app.
 
 ## Setup
 

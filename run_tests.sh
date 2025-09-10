@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Test runner script for the monorepo
+# Test runner script for the realtime-collaborative-app
 
 echo "🧪 Running Tests for Realtime Collaborative App"
 echo "=============================================="
