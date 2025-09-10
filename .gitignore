@@ -51,3 +51,8 @@ ENV/
 
 # FastAPI
 .pytest_cache/
+
+# Google Cloud credentials
+*.json
+key.json
+service-account-key.json
