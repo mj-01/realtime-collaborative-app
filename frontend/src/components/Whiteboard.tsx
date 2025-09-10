@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useSocket } from '../hooks/useSocket';
 
 interface Point {
   x: number;
@@ -26,47 +26,36 @@ interface DrawingEvent {
 
 const Whiteboard: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const socketRef = useRef<Socket | null>(null);
+  const { socket, isConnected } = useSocket();
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentColor, setCurrentColor] = useState('#000000');
   const [brushWidth, setBrushWidth] = useState(2);
   const [strokes, setStrokes] = useState<Map<string, Stroke>>(new Map());
   const [currentStroke, setCurrentStroke] = useState<Stroke | null>(null);
 
-  // Initialize socket connection
+  // Initialize socket event listeners
   useEffect(() => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-    console.log('Whiteboard connecting to backend URL:', backendUrl);
-    
-    socketRef.current = io(backendUrl, {
-      transports: ['websocket', 'polling']
-    });
-
-    const socket = socketRef.current;
+    if (!socket) return;
 
     // Listen for drawing events from other users
-    socket.on('drawing', (data: DrawingEvent) => {
+    const handleDrawing = (data: DrawingEvent) => {
       handleRemoteDrawing(data);
-    });
+    };
 
     // Listen for clear events
-    socket.on('clear', () => {
+    const handleClear = () => {
       clearCanvas();
-    });
+    };
 
-    socket.on('connect_error', (error) => {
-      console.error('Whiteboard socket connection error:', error);
-    });
-
-    socket.on('error', (error) => {
-      console.error('Whiteboard socket error:', error);
-    });
+    socket.on('drawing', handleDrawing);
+    socket.on('clear', handleClear);
 
     // Cleanup on unmount
     return () => {
-      socket.disconnect();
+      socket.off('drawing', handleDrawing);
+      socket.off('clear', handleClear);
     };
-  }, []);
+  }, [socket]);
 
   // Handle remote drawing events
   const handleRemoteDrawing = useCallback((data: DrawingEvent) => {
@@ -188,9 +177,9 @@ const Whiteboard: React.FC = () => {
     setIsDrawing(true);
 
     // Emit start event
-    if (socketRef.current) {
+    if (socket) {
       console.log('Emitting drawing start event');
-      socketRef.current.emit('drawing', {
+      socket.emit('drawing', {
         type: 'start',
         strokeId,
         point,
@@ -210,8 +199,8 @@ const Whiteboard: React.FC = () => {
     setCurrentStroke(prev => prev ? { ...prev, points: [...prev.points, point] } : null);
 
     // Emit draw event
-    if (socketRef.current) {
-      socketRef.current.emit('drawing', {
+    if (socket) {
+      socket.emit('drawing', {
         type: 'draw',
         strokeId: currentStroke.id,
         point
@@ -228,8 +217,8 @@ const Whiteboard: React.FC = () => {
     setCurrentStroke(null);
 
     // Emit end event
-    if (socketRef.current) {
-      socketRef.current.emit('drawing', {
+    if (socket) {
+      socket.emit('drawing', {
         type: 'end',
         strokeId: currentStroke.id
       } as DrawingEvent);
@@ -250,8 +239,8 @@ const Whiteboard: React.FC = () => {
     }
 
     // Emit clear event
-    if (socketRef.current) {
-      socketRef.current.emit('clear');
+    if (socket) {
+      socket.emit('clear');
     }
   };
 
@@ -335,9 +324,9 @@ const Whiteboard: React.FC = () => {
 
         {/* Connection Status */}
         <div className="ml-auto flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${socketRef.current?.connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+          <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
           <span className="text-sm text-gray-600">
-            {socketRef.current?.connected ? 'Connected' : 'Disconnected'}
+            {isConnected ? 'Connected' : 'Disconnected'}
           </span>
         </div>
       </div>

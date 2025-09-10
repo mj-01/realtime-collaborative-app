@@ -83,7 +83,7 @@ export const Chat: React.FC = () => {
       setMessages(messagesList);
     };
 
-    // Register event listeners
+    // Register event listeners using socket service methods
     socket.on('chat_message', handleMessage);
     socket.on('user_joined', handleUserJoined);
     socket.on('user_left', handleUserLeft);
