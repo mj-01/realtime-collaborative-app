@@ -12,6 +12,7 @@ export const useSocket = () => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    // Get the socket from the service
     const newSocket = socketService.connect();
     setSocket(newSocket);
 
@@ -29,25 +30,32 @@ export const useSocket = () => {
       console.error('Socket error:', error);
     };
 
+    // Add event listeners
     newSocket.on('connect', handleConnect);
     newSocket.on('disconnect', handleDisconnect);
     newSocket.on('error', handleError);
+
+    // Check initial connection state
+    setIsConnected(newSocket.connected);
 
     return () => {
       newSocket.off('connect', handleConnect);
       newSocket.off('disconnect', handleDisconnect);
       newSocket.off('error', handleError);
-      socketService.disconnect();
     };
   }, []);
 
   const joinChat = useCallback((userId: string, userName: string) => {
-    socketService.joinChat(userId, userName);
-  }, []);
+    if (socket) {
+      socket.emit('join_chat', { userId, userName });
+    }
+  }, [socket]);
 
   const sendMessage = useCallback((message: Message) => {
-    socketService.sendMessage(message);
-  }, []);
+    if (socket) {
+      socket.emit('chat_message', message);
+    }
+  }, [socket]);
 
   return {
     socket,

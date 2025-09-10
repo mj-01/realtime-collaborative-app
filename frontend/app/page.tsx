@@ -87,8 +87,8 @@ export default function Home() {
               Built with Next.js, FastAPI, Socket.IO, and Google Cloud
             </p>
             <p className="mt-2">
-              Frontend: <a href={process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://frontend-987275518911.us-central1.run.app'} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Cloud Run</a> | 
-              Backend: <a href={process.env.NEXT_PUBLIC_BACKEND_URL || 'https://backend-987275518911.us-central1.run.app'} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Cloud Run</a>
+              Frontend: <a href="https://frontend-987275518911.us-central1.run.app" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Cloud Run</a> | 
+              Backend: <a href="https://backend-987275518911.us-central1.run.app" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Cloud Run</a>
             </p>
           </div>
         </div>

@@ -2,7 +2,7 @@
  * Application constants.
  */
 
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://backend-987275518911.us-central1.run.app';
+export const BACKEND_URL = 'https://backend-987275518911.us-central1.run.app';
 
 export const SOCKET_EVENTS = {
   CONNECT: 'connect',

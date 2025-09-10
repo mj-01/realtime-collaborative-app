@@ -14,6 +14,14 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Set build-time environment variables
+ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_FRONTEND_URL
+
+# Set environment variables for build
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_FRONTEND_URL=$NEXT_PUBLIC_FRONTEND_URL
+
 # Build the application
 RUN npm run build
 
